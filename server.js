@@ -29,9 +29,16 @@ app.post('/update', (req, res) => {
     return v;
   });
 
-  res.json(vaults); // Devolve a lista atualizada para o frontend refletir a mudança
+  // ... resto das tuas rotas (get /vaults, post /update)
+
+  res.json(vaults); 
 });
 
-app.listen(port, () => {
-  console.log(`Servidor Helios a rodar em http://localhost:${port}`);
+// ESTA É A PARTE FINAL CORRETA:
+const port = process.env.PORT || 3001;
+
+app.listen(port, '0.0.0.0', () => {
+  console.log("---------------------------------- ");
+  console.log(`Helios Backend ativo na porta: ${port}`);
+  console.log("---------------------------------- ");
 });
