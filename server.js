@@ -1,44 +1,51 @@
+const mongoose = require('mongoose');
+
+// Usa o MESMO link que usaste no seed.js
+const mongoURI = "mongodb+srv://nunofcmesquita_db_user:btmhgNv6OyrpGwDT@helios-database.xxxx.mongodb.net/helios?retryWrites=true&w=majority";
+
+mongoose.connect(mongoURI);
+
+const Vault = mongoose.model('Vault', new mongoose.Schema({
+  id: Number,
+  name: String,
+  released: Number,
+  total: Number
+}));
+
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = 3001;
 
 app.use(cors());
 app.use(express.json());
 
-// Dados de exemplo (simulando uma base de dados)
-let vaults = [
-  { id: 1, name: "Milestone A - MVP", released: 5000, total: 20000 },
-  { id: 2, name: "Milestone B - Marketing", released: 0, total: 15000 }
-];
-
-// Listar vaults
-app.get('/vaults', (req, res) => {
-  res.json(vaults); // O teu frontend espera o array direto aqui
+// 1. Rota para o investidor ver os Vaults (Lê do MongoDB)
+app.get('/vaults', async (req, res) => {
+  try {
+    const vaults = await Vault.find();
+    res.json(vaults);
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao procurar no espaço" });
+  }
 });
 
-// Atualizar vault (o que os teus botões chamam)
-app.post('/update', (req, res) => {
+// 2. Rota para libertar fundos (Grava no MongoDB)
+app.post('/update', async (req, res) => {
   const { id, action } = req.body;
-  
-  vaults = vaults.map(v => {
-    if (v.id === id) {
-      // Exemplo de lógica: cada clique liberta 1000€
-      return { ...v, released: v.released + 1000 };
-    }
-    return v;
-  });
-
-  // ... resto das tuas rotas (get /vaults, post /update)
-
-  res.json(vaults); 
+  try {
+    // A cada clique, aumenta 1000€ no campo 'released'
+    await Vault.findOneAndUpdate({ id: id }, { $inc: { released: 1000 } });
+    
+    // Devolve a lista atualizada para o ecrã do investidor mudar na hora
+    const atualizados = await Vault.find();
+    res.json(atualizados);
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao atualizar o cofre" });
+  }
 });
 
-// ESTA É A PARTE FINAL CORRETA:
+// 3. Iniciar o servidor (Porta para o Render)
 const port = process.env.PORT || 3001;
-
 app.listen(port, '0.0.0.0', () => {
-  console.log("---------------------------------- ");
-  console.log(`Helios Backend ativo na porta: ${port}`);
-  console.log("---------------------------------- ");
+  console.log(`Helios Vault operativo na porta ${port}`);
 });
