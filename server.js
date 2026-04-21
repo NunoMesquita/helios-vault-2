@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 // Usa o MESMO link que usaste no seed.js
-const mongoURI = "mongodb+srv://nunofcmesquita_db_user:btmhgNv6OyrpGwDT@helios-database.xxxx.mongodb.net/helios?retryWrites=true&w=majority";
-
-mongoose.connect(mongoURI);
+const mongoURI = "mongodb+srv://nunofcmesquita_db_user:niuhhvuih3uib@helios-database.xxxx.mongodb.net/helios?retryWrites=true&w=majority";
+mongoose.connect(mongoURI)
+  .then(() => console.log("Ligado ao Atlas"))
+  .catch(err => console.log("Erro:", err));
 
 const Vault = mongoose.model('Vault', new mongoose.Schema({
   id: Number,
