@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Usa o MESMO link que usaste no seed.js
-const mongoURI = "mongodb+srv://nunofcmesquita_db_user:niuhhvuih3uib@helios-database.xxxx.mongodb.net/helios?retryWrites=true&w=majority";
+const mongoURI = "mongodb+srv://nunofcmesquita_db_user:niuhhvuih3uib@helios-database.gpzrrej.mongodb.net/?appName=HELIOS-DATABASE&retryWrites=true&w=majority";
 mongoose.connect(mongoURI)
   .then(() => console.log("Ligado ao Atlas"))
   .catch(err => console.log("Erro:", err));
